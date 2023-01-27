@@ -1,5 +1,5 @@
 use actix::Message;
-use db_models::{Transactions, User};
+use db_models::{Transaction, User};
 use diesel::QueryResult;
 
 use super::db_models;
@@ -9,13 +9,13 @@ use super::db_models;
 pub struct GetUsers;
 
 #[derive(Message)]
-#[rtype(result = "QueryResult<Vec<Transactions>>")]
+#[rtype(result = "QueryResult<Vec<Transaction>>")]
 pub struct GetUserTransactions {
     pub user_id: String,
 }
 
 #[derive(Message)]
-#[rtype(result = "QueryResult<Transactions>")]
+#[rtype(result = "QueryResult<Transaction>")]
 pub struct PostUserTransactions {
     pub id: String,
     pub sender_id: String,

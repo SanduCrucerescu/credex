@@ -1,10 +1,12 @@
-use crate::db::db_models::{Transactions, User};
+use crate::db::db_models::{Transaction, User};
 use crate::db::db_utils::DbActor;
 use crate::db::messages::{GetUserTransactions, GetUsers, PostUserTransactions};
-use crate::db::schema::transactions::dsl::*;
-use crate::db::schema::users::{dsl::*, id as transaction_id};
+use crate::db::schema::transactions::{dsl::*, id as transaction_id};
+use crate::db::schema::users::dsl::*;
 use actix::Handler;
 use diesel::{self, prelude::*};
+
+use super::insertables::NewTransaction;
 
 impl Handler<GetUsers> for DbActor {
     type Result = QueryResult<Vec<User>>;
@@ -20,7 +22,7 @@ impl Handler<GetUsers> for DbActor {
 }
 
 impl Handler<GetUserTransactions> for DbActor {
-    type Result = QueryResult<Vec<Transactions>>;
+    type Result = QueryResult<Vec<Transaction>>;
 
     fn handle(&mut self, msg: GetUserTransactions, _ctx: &mut Self::Context) -> Self::Result {
         let mut conn = self
@@ -30,12 +32,12 @@ impl Handler<GetUserTransactions> for DbActor {
 
         transactions
             .filter(sender_id.eq(msg.user_id))
-            .get_results::<Transactions>(&mut conn)
+            .get_results::<Transaction>(&mut conn)
     }
 }
 
 impl Handler<PostUserTransactions> for DbActor {
-    type Result = QueryResult<Transactions>;
+    type Result = QueryResult<Transaction>;
 
     fn handle(&mut self, msg: PostUserTransactions, _ctx: &mut Self::Context) -> Self::Result {
         let mut conn = self
@@ -43,8 +45,15 @@ impl Handler<PostUserTransactions> for DbActor {
             .get()
             .expect("Fetch user transactions: Unable to establish connection");
 
+        let new_transaction = NewTransaction {
+            id: msg.id,
+            sender_id: msg.sender_id,
+            receiver_id: msg.receiver_id,
+            amount: msg.amount,
+        };
         diesel::insert_into(transactions)
-            .values(&msg.body)
-            .get_result::<Transactions>(&mut conn)
+            .values(new_transaction)
+            .returning((transaction_id, sender_id, receiver_id, amount))
+            .get_result::<Transaction>(&mut conn)
     }
 }

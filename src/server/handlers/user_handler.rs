@@ -1,12 +1,20 @@
-use crate::db::db_models::{Transactions, User};
+use crate::db::db_models::{Transaction, User};
 use crate::db::db_utils::{AppState, DbActor};
-use crate::db::messages::{GetUserTransactions, GetUsers};
+use crate::db::messages::{GetUserTransactions, GetUsers, PostUserTransactions};
 use actix::Addr;
 use actix_web::{
     get, post, web,
     web::{Data, Json, Path},
     HttpResponse, Responder,
 };
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+pub struct CreateTransactionBody {
+    pub sender_id: String,
+    pub receiver_id: String,
+    pub amount: f32,
+}
 
 #[get("/users")]
 pub async fn get_users(state: Data<AppState>) -> impl Responder {
@@ -30,11 +38,25 @@ pub async fn get_user_transactions(state: Data<AppState>, path: Path<String>) ->
     }
 }
 
-#[post("/users/{id}/transactons")]
+#[post("/users/{id}/transactions")]
 pub async fn post_user_transactions(
+    state: Data<AppState>,
     path: Path<String>,
-    body: Json<Transactions>,
+    body: Json<CreateTransactionBody>,
 ) -> impl Responder {
     let id = path.into_inner();
-    format!("POST /users/{id}/transactions")
+    let db = state.as_ref().db.clone();
+
+    match db
+        .send(PostUserTransactions {
+            id: id.clone(),
+            sender_id: id,
+            receiver_id: body.receiver_id.clone(),
+            amount: body.amount,
+        })
+        .await
+    {
+        Ok(Ok(info)) => HttpResponse::Ok().json(info),
+        _ => HttpResponse::InternalServerError().json("Failed to post transaction"),
+    }
 }

@@ -22,6 +22,6 @@ diesel::table! {
     }
 }
 
-diesel::joinable!(transactions -> users (sender_id));
+// diesel::joinable!(transactions -> users (sender_id));
 
 diesel::allow_tables_to_appear_in_same_query!(users, transactions,);

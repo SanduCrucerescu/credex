@@ -22,15 +22,8 @@ pub struct User {
     // pub updated_at: Option<DateTime<Utc>>,
 }
 
-// #[derive(Queryable, Debug, Serialize)]
-// pub struct User {
-//     pub id: i32,
-//     pub first_name: String,
-//     pub last_name: String,
-// }
-
 #[derive(Queryable, Debug, Serialize)]
-pub struct Transactions {
+pub struct Transaction {
     pub id: String,
     pub sender_id: String,
     pub receiver_id: String,
