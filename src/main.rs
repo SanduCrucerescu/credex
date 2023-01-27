@@ -2,7 +2,7 @@ use actix::SyncArbiter;
 use actix_web::{get, post, web::Data, App, HttpResponse, HttpServer, Responder};
 use credex::{
     db::db_utils::{get_pool, AppState, DbActor},
-    server::handlers::user_handler::get_users,
+    server::handlers::user_handler::{get_user_transactions, get_users},
 };
 use diesel::{
     r2d2::{ConnectionManager, Pool},
@@ -10,11 +10,6 @@ use diesel::{
 };
 use dotenvy::dotenv;
 use std::env;
-
-#[get("/")]
-async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
-}
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -29,6 +24,7 @@ async fn main() -> std::io::Result<()> {
                 db: db_addr.clone(),
             }))
             .service(get_users)
+            .service(get_user_transactions)
     })
     .bind(("127.0.0.1", 8080))?
     .run()

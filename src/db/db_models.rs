@@ -35,8 +35,8 @@ pub struct Transactions {
     pub sender_id: String,
     pub receiver_id: String,
     pub amount: f32,
-    #[serde(skip_serializing)]
-    pub created_at: DateTime<Utc>,
-    #[serde(skip_serializing)]
-    pub received_at: DateTime<Utc>,
+    // #[serde(skip_serializing)]
+    // pub created_at: DateTime<Utc>,
+    // #[serde(skip_serializing)]
+    // pub received_at: DateTime<Utc>,
 }

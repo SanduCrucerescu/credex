@@ -17,11 +17,11 @@ diesel::table! {
         sender_id -> Varchar,
         receiver_id -> Varchar,
         amount -> Float,
-        created_at -> Nullable<Timestamptz>,
-        received_at -> Nullable<Timestamptz>,
+        // created_at -> Nullable<Timestamptz>,
+        // received_at -> Nullable<Timestamptz>,
     }
 }
 
-// diesel::joinable!(transactions -> users (sender_id));
+diesel::joinable!(transactions -> users (sender_id));
 
 diesel::allow_tables_to_appear_in_same_query!(users, transactions,);
