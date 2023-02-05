@@ -1,6 +1,6 @@
 use actix::SyncArbiter;
 use actix_web::{get, post, web::Data, App, HttpResponse, HttpServer, Responder};
-use credex::{
+use backend::{
     db::db_utils::{get_pool, AppState, DbActor},
     server::handlers::user_handler::{get_user_transactions, get_users, post_user_transactions},
 };
