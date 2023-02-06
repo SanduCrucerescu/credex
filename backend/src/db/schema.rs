@@ -1,13 +1,13 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    users(id) {
-        id -> Varchar,
+    users(user_id) {
+        user_id -> Varchar,
         name -> Varchar,
         email -> Varchar,
         password -> Varchar,
-        // created_at -> Nullable<Timestamptz>,
-        // updated_at -> Nullable<Timestamptz>,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
     }
 }
 
