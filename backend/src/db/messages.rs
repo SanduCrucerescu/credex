@@ -1,12 +1,12 @@
 use actix::Message;
-use db_models::{Transaction, User};
+use db_models::{Client, Transaction};
 use diesel::QueryResult;
 
 use super::db_models;
 
 #[derive(Message)]
-#[rtype(result = "QueryResult<Vec<User>>")]
-pub struct GetUsers;
+#[rtype(result = "QueryResult<Vec<Client>>")]
+pub struct GetClients;
 
 #[derive(Message)]
 #[rtype(result = "QueryResult<Vec<Transaction>>")]

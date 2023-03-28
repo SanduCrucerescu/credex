@@ -1,6 +1,6 @@
-use crate::db::db_models::{Transaction, User};
+use crate::db::db_models::{Client, Transaction};
 use crate::db::db_utils::{AppState, DbActor};
-use crate::db::messages::{GetUserTransactions, GetUsers, PostUserTransactions};
+use crate::db::messages::{GetClients, GetUserTransactions, PostUserTransactions};
 use actix::Addr;
 use actix_web::{
     get, post, web,
@@ -16,16 +16,17 @@ pub struct CreateTransactionBody {
     pub amount: f32,
 }
 
-#[get("/users")]
-pub async fn get_users(state: Data<AppState>) -> impl Responder {
+#[get("/clients")]
+pub async fn get_clients(state: Data<AppState>) -> impl Responder {
     let db = state.as_ref().db.clone();
 
-    match db.send(GetUsers).await {
+    match db.send(GetClients).await {
         Ok(Ok(info)) => HttpResponse::Ok().json(info),
-        Ok(Err(_)) => HttpResponse::NotFound().json("No users found"),
-        _ => HttpResponse::InternalServerError().json("Unable to retrieve users"),
+        Ok(Err(_)) => HttpResponse::NotFound().json("No clients found"),
+        _ => HttpResponse::InternalServerError().json("Unable to retrieve clients"),
     }
 }
+
 #[get("/users/{id}/transactions")]
 pub async fn get_user_transactions(state: Data<AppState>, path: Path<String>) -> impl Responder {
     let id = path.into_inner();

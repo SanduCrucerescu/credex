@@ -1,23 +1,23 @@
-use crate::db::db_models::{Transaction, User};
+use crate::db::db_models::{Client, Transaction};
 use crate::db::db_utils::DbActor;
-use crate::db::messages::{GetUserTransactions, GetUsers, PostUserTransactions};
+use crate::db::messages::{GetClients, GetUserTransactions, PostUserTransactions};
+use crate::db::schema::clients::dsl::*;
 use crate::db::schema::transactions::{dsl::*, id as transaction_id};
-use crate::db::schema::users::dsl::*;
 use actix::Handler;
 use diesel::{self, prelude::*};
 
 use super::insertables::NewTransaction;
 
-impl Handler<GetUsers> for DbActor {
-    type Result = QueryResult<Vec<User>>;
+impl Handler<GetClients> for DbActor {
+    type Result = QueryResult<Vec<Client>>;
 
-    fn handle(&mut self, _msg: GetUsers, _ctx: &mut Self::Context) -> Self::Result {
+    fn handle(&mut self, _msg: GetClients, _ctx: &mut Self::Context) -> Self::Result {
         let mut conn = self
             .0
             .get()
             .expect("Fetch User: Unable to establish connection");
 
-        users.get_results::<User>(&mut conn)
+        clients.get_results::<Client>(&mut conn)
     }
 }
 
