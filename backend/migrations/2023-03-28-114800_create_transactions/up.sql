@@ -5,7 +5,7 @@ CREATE TABLE transactions (
     sender_id VARCHAR(255) NOT NULL,
     receiver_id VARCHAR(255) NOT NULL,
     amount REAL NOT NULL,
-    -- date TIMESTAMP NOT NULL,
+    withdrawal_time TIMESTAMP NOT NULL,
     PRIMARY KEY (id)
     -- FOREIGN KEY (client_id) REFERENCES clients(id)
 )

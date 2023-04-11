@@ -1,12 +1,12 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    clients (id) {
-        id -> Varchar,
+    clients (client_id) {
+        client_id -> Varchar,
         name -> Varchar,
         email -> Varchar,
         password -> Varchar,
-        balance -> Float8,
+        balance -> Float4,
         date_of_birth -> Timestamp,
     }
 }
@@ -17,10 +17,8 @@ diesel::table! {
         sender_id -> Varchar,
         receiver_id -> Varchar,
         amount -> Float4,
+        withdrawal_time -> Timestamp,
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(
-    clients,
-    transactions,
-);
+diesel::allow_tables_to_appear_in_same_query!(clients, transactions,);

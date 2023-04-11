@@ -1,6 +1,5 @@
-use crate::db::db_models::{Client, Transaction};
 use crate::db::db_utils::{AppState, DbActor};
-use crate::db::messages::{GetClients, GetUserTransactions, PostUserTransactions};
+use crate::db::messages::{GetClient, GetClients, GetUserTransactions, PostUserTransactions};
 use actix::Addr;
 use actix_web::{
     get, post, web,
@@ -24,6 +23,18 @@ pub async fn get_clients(state: Data<AppState>) -> impl Responder {
         Ok(Ok(info)) => HttpResponse::Ok().json(info),
         Ok(Err(_)) => HttpResponse::NotFound().json("No clients found"),
         _ => HttpResponse::InternalServerError().json("Unable to retrieve clients"),
+    }
+}
+
+#[get("/client/{id}")]
+pub async fn get_client(state: Data<AppState>, path: Path<String>) -> impl Responder {
+    let id = path.into_inner();
+    let db = state.as_ref().db.clone();
+
+    match db.send(GetClient { client_id: id }).await {
+        Ok(Ok(info)) => HttpResponse::Ok().json(info),
+        Ok(Err(_)) => HttpResponse::NotFound().json("No client found"),
+        _ => HttpResponse::InternalServerError().json("Unable to retrieve client"),
     }
 }
 

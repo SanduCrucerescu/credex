@@ -1,27 +1,24 @@
-use yew::prelude::*;
+mod api;
+mod bank;
+mod components;
 
-struct Model {
-    value: i64,
-}
+use bank::Bank;
+use components::user_info::UserInfo;
+use yew::prelude::*;
+use yewdux::prelude::*;
 
 #[function_component]
 fn App() -> Html {
-    let state = use_state(|| Model { value: 0 });
-
-    let onclick = {
-        let state = state.clone();
-        Callback::from(move |_| {
-            state.set(Model {
-                value: state.value + 1,
-            })
-        })
-    };
+    let (bank, _) = use_store::<Bank>();
+    let loading = &bank.loading;
 
     html! {
-        <div>
-            <button {onclick}>{ "Click me!" }</button>
-            <p>{ state.value }</p>
-        </div>
+        <>
+        <h1>{"Hello World!"}</h1>
+        <main>
+        <UserInfo />
+        </main>
+        </>
     }
 }
 

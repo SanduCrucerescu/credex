@@ -9,6 +9,12 @@ use super::db_models;
 pub struct GetClients;
 
 #[derive(Message)]
+#[rtype(result = "QueryResult<Client>")]
+pub struct GetClient {
+    pub client_id: String,
+}
+
+#[derive(Message)]
 #[rtype(result = "QueryResult<Vec<Transaction>>")]
 pub struct GetUserTransactions {
     pub user_id: String,

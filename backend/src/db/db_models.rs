@@ -9,11 +9,11 @@ use serde::Serialize;
 
 #[derive(Queryable, Debug, Serialize)]
 pub struct Client {
-    pub id: String,
+    pub client_id: String,
     pub name: String,
     pub email: String,
     pub password: String,
-    pub balance: f64,
+    pub balance: f32,
     #[serde(skip_serializing)]
     pub date_of_birth: NaiveDateTime,
 }
@@ -24,8 +24,6 @@ pub struct Transaction {
     pub sender_id: String,
     pub receiver_id: String,
     pub amount: f32,
-    // #[serde(skip_serializing)]
-    // pub created_at: DateTime<Utc>,
-    // #[serde(skip_serializing)]
-    // pub received_at: DateTime<Utc>,
+    #[serde(skip_serializing)]
+    pub withdrawal_time: NaiveDateTime,
 }

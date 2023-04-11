@@ -1,4 +1,5 @@
 use crate::db::schema::transactions;
+use chrono::NaiveDateTime;
 use diesel::Insertable;
 use serde::Serialize;
 
@@ -9,4 +10,5 @@ pub struct NewTransaction {
     pub sender_id: String,
     pub receiver_id: String,
     pub amount: f32,
+    pub withdrawal_time: NaiveDateTime,
 }
