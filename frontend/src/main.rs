@@ -1,10 +1,13 @@
 mod api;
 mod bank;
 mod components;
+mod pages;
+mod router;
 
+use crate::router::*;
 use bank::Bank;
-use components::user_info::UserInfo;
 use yew::prelude::*;
+use yew_router::{BrowserRouter, Switch};
 use yewdux::prelude::*;
 
 #[function_component]
@@ -13,12 +16,9 @@ fn App() -> Html {
     let loading = &bank.loading;
 
     html! {
-        <>
-        <h1>{"Hello World!"}</h1>
-        <main>
-        <UserInfo />
-        </main>
-        </>
+        <BrowserRouter>
+            <Switch<Route> render={switch}/>
+        </BrowserRouter>
     }
 }
 

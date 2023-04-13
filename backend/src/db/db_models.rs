@@ -13,9 +13,17 @@ pub struct Client {
     pub name: String,
     pub email: String,
     pub password: String,
-    pub balance: f32,
     #[serde(skip_serializing)]
     pub date_of_birth: NaiveDateTime,
+}
+
+#[derive(Queryable, Debug, Serialize)]
+pub struct Account {
+    pub acc_id: i32,
+    pub client_id: String,
+    pub balance: f32,
+    #[serde(skip_serializing)]
+    pub acc_activation_date: NaiveDateTime,
 }
 
 #[derive(Queryable, Debug, Serialize)]

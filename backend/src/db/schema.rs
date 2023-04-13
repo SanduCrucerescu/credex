@@ -1,12 +1,20 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    accounts (acc_id) {
+        acc_id -> Int4,
+        client_id -> Varchar,
+        balance -> Float4,
+        acc_activation_date -> Timestamp,
+    }
+}
+
+diesel::table! {
     clients (client_id) {
         client_id -> Varchar,
         name -> Varchar,
         email -> Varchar,
         password -> Varchar,
-        balance -> Float4,
         date_of_birth -> Timestamp,
     }
 }
@@ -21,4 +29,6 @@ diesel::table! {
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(clients, transactions,);
+diesel::joinable!(accounts -> clients (client_id));
+
+diesel::allow_tables_to_appear_in_same_query!(accounts, clients, transactions,);

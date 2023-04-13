@@ -1,8 +1,7 @@
-use crate::db::db_utils::{AppState, DbActor};
+use crate::db::db_utils::AppState;
 use crate::db::messages::{GetClient, GetClients, GetUserTransactions, PostUserTransactions};
-use actix::Addr;
 use actix_web::{
-    get, post, web,
+    get, post,
     web::{Data, Json, Path},
     HttpResponse, Responder,
 };

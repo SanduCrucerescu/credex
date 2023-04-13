@@ -7,11 +7,21 @@ pub struct Client {
     pub name: String,
     pub email: String,
     pub password: String,
-    pub balance: f64,
     #[serde(skip_serializing)]
     #[serde(skip_deserializing)]
     pub date_of_birth: NaiveDateTime,
 }
+
+#[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
+pub struct Account {
+    pub acc_id: i32,
+    pub client_id: String,
+    pub balance: f64,
+    #[serde(skip_serializing)]
+    #[serde(skip_deserializing)]
+    pub acc_activation_date: NaiveDateTime,
+}
+
 #[derive(Serialize, Debug, Deserialize)]
 pub struct ErrorResponse {
     pub status: String,

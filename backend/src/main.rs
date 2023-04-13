@@ -1,7 +1,6 @@
 use actix::SyncArbiter;
 use actix_cors::Cors;
 use actix_web::{
-    http::header,
     middleware::Logger,
     web::{scope, Data},
     App, HttpServer,

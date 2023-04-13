@@ -1,5 +1,4 @@
 use common::{Client, ErrorResponse};
-use gloo::console::log;
 use reqwasm::http;
 
 pub async fn api_fetch_client(client_id: &str) -> Result<Client, String> {
