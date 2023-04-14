@@ -35,3 +35,9 @@ pub struct Transaction {
     #[serde(skip_serializing)]
     pub withdrawal_time: NaiveDateTime,
 }
+
+#[derive(Queryable, Debug, Serialize, Deserialize)]
+pub struct Login {
+    pub email: String,
+    pub password: String,
+}

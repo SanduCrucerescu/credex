@@ -1,12 +1,14 @@
-use crate::db::db_models::{Client, Transaction};
+use crate::db::db_models::{Client, Login, Transaction};
 use crate::db::db_utils::DbActor;
-use crate::db::messages::{GetClient, GetClients, GetUserTransactions, PostUserTransactions};
+use crate::db::messages::{
+    GetClient, GetClients, GetUserTransactions, PostLogin, PostUserTransactions,
+};
 use crate::db::schema::clients::dsl::*;
 use crate::db::schema::transactions::{dsl::*, id as transaction_id};
 use actix::Handler;
 use diesel::{self, prelude::*};
 
-use super::insertables::NewTransaction;
+use super::insertables::{NewClient, NewLogin, NewTransaction};
 
 impl Handler<GetClients> for DbActor {
     type Result = QueryResult<Vec<Client>>;
@@ -77,5 +79,19 @@ impl Handler<PostUserTransactions> for DbActor {
                 withdrawal_time,
             ))
             .get_result::<Transaction>(&mut conn)
+    }
+}
+
+impl Handler<PostLogin> for DbActor {
+    type Result = QueryResult<Login>;
+
+    fn handle(&mut self, msg: PostLogin, _ctx: &mut Self::Context) -> Self::Result {
+        let mut conn = self.0.get().expect("Login: Unable to establish connection");
+
+        clients
+            .select((email, password))
+            .filter(email.eq(msg.email))
+            .filter(password.eq(msg.password))
+            .get_result::<Login>(&mut conn)
     }
 }

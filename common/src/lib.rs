@@ -27,3 +27,9 @@ pub struct ErrorResponse {
     pub status: String,
     pub message: String,
 }
+
+#[derive(Serialize, Debug, Deserialize)]
+pub struct UserLoginResponse {
+    pub status: String,
+    pub message: String,
+}

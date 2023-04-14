@@ -1,10 +1,13 @@
 use crate::db::db_utils::AppState;
-use crate::db::messages::{GetClient, GetClients, GetUserTransactions, PostUserTransactions};
+use crate::db::messages::{
+    GetClient, GetClients, GetUserTransactions, PostLogin, PostUserTransactions,
+};
 use actix_web::{
     get, post,
     web::{Data, Json, Path},
     HttpResponse, Responder,
 };
+use chrono::NaiveDateTime;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -12,6 +15,12 @@ pub struct CreateTransactionBody {
     pub sender_id: String,
     pub receiver_id: String,
     pub amount: f32,
+}
+
+#[derive(Deserialize, Clone)]
+pub struct CreateLoginBody {
+    pub email: String,
+    pub password: String,
 }
 
 #[get("/clients")]
@@ -46,6 +55,24 @@ pub async fn get_user_transactions(state: Data<AppState>, path: Path<String>) ->
         Ok(Ok(info)) => HttpResponse::Ok().json(info),
         Ok(Err(_)) => HttpResponse::NotFound().json("No transactions found for user {id}"),
         _ => HttpResponse::InternalServerError().json("Unable to retrieve transactions"),
+    }
+}
+
+// change body to the extractor
+#[post("/login")]
+pub async fn post_login(state: Data<AppState>, body: Json<CreateLoginBody>) -> impl Responder {
+    let db = state.as_ref().db.clone();
+
+    match db
+        .send(PostLogin {
+            email: body.email.clone(),
+            password: body.password.clone(),
+        })
+        .await
+    {
+        Ok(Ok(info)) => HttpResponse::Ok().json(info),
+        Ok(Err(_)) => HttpResponse::NotFound().json("No user found"),
+        _ => HttpResponse::InternalServerError().json("Failed to post"),
     }
 }
 

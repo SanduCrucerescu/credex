@@ -8,7 +8,7 @@ use actix_web::{
 use backend::{
     db::db_utils::{get_pool, AppState, DbActor},
     server::handlers::user_handler::{
-        get_client, get_clients, get_user_transactions, post_user_transactions,
+        get_client, get_clients, get_user_transactions, post_login, post_user_transactions,
     },
 };
 use dotenvy::dotenv;
@@ -40,6 +40,7 @@ async fn main() -> std::io::Result<()> {
                     .service(get_clients)
                     .service(get_client)
                     .service(get_user_transactions)
+                    .service(post_login)
                     .service(post_user_transactions),
             )
             .wrap(cors)

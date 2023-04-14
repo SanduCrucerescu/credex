@@ -2,7 +2,7 @@ mod api;
 mod bank;
 mod components;
 mod pages;
-mod router;
+pub mod router;
 
 use crate::router::*;
 use bank::Bank;

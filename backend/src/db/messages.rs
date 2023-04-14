@@ -1,5 +1,6 @@
 use actix::Message;
-use db_models::{Client, Transaction};
+use chrono::NaiveDateTime;
+use db_models::{Client, Login, Transaction};
 use diesel::QueryResult;
 
 use super::db_models;
@@ -27,4 +28,11 @@ pub struct PostUserTransactions {
     pub sender_id: String,
     pub receiver_id: String,
     pub amount: f32,
+}
+
+#[derive(Message)]
+#[rtype(result = "QueryResult<Login>")]
+pub struct PostLogin {
+    pub email: String,
+    pub password: String,
 }
