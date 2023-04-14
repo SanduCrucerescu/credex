@@ -27,7 +27,7 @@ struct LoginClientSchema {
     //     length(min = 1, message = "Password is requred"),
     //     length(min = 6, message = "Passoword must be at least 6 characters long")
     // )]
-    pw: String,
+    password: String,
 }
 
 fn get_input(
@@ -38,7 +38,7 @@ fn get_input(
         let mut data = cloned_form.deref().clone();
         match name {
             "email" => data.email = value,
-            "pw" => data.pw = value,
+            "password" => data.password = value,
             _ => (),
         }
         cloned_form.set(data);
@@ -61,7 +61,7 @@ pub fn LoginPage() -> Html {
             let mut data = cloned_form.deref().clone();
             match name.as_str() {
                 "email" => data.email = value,
-                "pw" => data.pw = value,
+                "pw" => data.password = value,
                 _ => (),
             }
             cloned_form.set(data);
@@ -92,7 +92,7 @@ pub fn LoginPage() -> Html {
     };
 
     let handle_email_input = get_input("email", form.clone());
-    let handle_pw_input = get_input("pw", form.clone());
+    let handle_pw_input = get_input("password", form.clone());
 
     let on_submit = {
         let cloned_from = form.clone();
@@ -113,7 +113,6 @@ pub fn LoginPage() -> Html {
             spawn_local(async move {
                 match form.validate() {
                     Ok(_) => {
-                        log!("here");
                         let form_data = form.deref().clone();
                         set_loading(true, dispatch.clone());
 
@@ -124,7 +123,6 @@ pub fn LoginPage() -> Html {
                         pw_input.set_value("");
 
                         let form_json = serde_json::to_string(&form_data).unwrap();
-                        log!(&form_json);
                         let res = api_login_client(&form_json).await;
                         match res {
                             Ok(_) => {

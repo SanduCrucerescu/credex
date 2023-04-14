@@ -8,6 +8,7 @@ use actix_web::{
     HttpResponse, Responder,
 };
 use chrono::NaiveDateTime;
+use common::UserLoginResponse;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -17,7 +18,7 @@ pub struct CreateTransactionBody {
     pub amount: f32,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct CreateLoginBody {
     pub email: String,
     pub password: String,
@@ -62,7 +63,6 @@ pub async fn get_user_transactions(state: Data<AppState>, path: Path<String>) ->
 #[post("/login")]
 pub async fn post_login(state: Data<AppState>, body: Json<CreateLoginBody>) -> impl Responder {
     let db = state.as_ref().db.clone();
-
     match db
         .send(PostLogin {
             email: body.email.clone(),
@@ -70,8 +70,14 @@ pub async fn post_login(state: Data<AppState>, body: Json<CreateLoginBody>) -> i
         })
         .await
     {
-        Ok(Ok(info)) => HttpResponse::Ok().json(info),
-        Ok(Err(_)) => HttpResponse::NotFound().json("No user found"),
+        Ok(Ok(_)) => HttpResponse::Ok().json(UserLoginResponse {
+            status: "200".to_string(),
+            message: "Successfull".to_string(),
+        }),
+        Ok(Err(_)) => HttpResponse::NotFound().json(UserLoginResponse {
+            status: "404".to_string(),
+            message: "User not found".to_string(),
+        }),
         _ => HttpResponse::InternalServerError().json("Failed to post"),
     }
 }
