@@ -5,5 +5,8 @@
         "./frontend/Cargo.toml",
         "./frontend/Cargo.toml"
     ],
-    "rust-analyzer.showUnlinkedFileNotification": false
+    "rust-analyzer.showUnlinkedFileNotification": false,
+    "emmet.includeLanguages": {
+        "rust": "html",
+    }
 }

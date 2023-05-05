@@ -743,6 +743,7 @@ version = "0.1.0"
 dependencies = [
  "common",
  "gloo",
+ "log",
  "reqwasm",
  "serde",
  "serde_json",

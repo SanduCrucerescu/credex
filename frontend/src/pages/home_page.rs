@@ -5,7 +5,12 @@ use yewdux::prelude::*;
 pub fn HomePage() -> Html {
     html! {
         <>
-        <h1> {"HomePage"} </h1>
+        <nav class={classes!("bg-grey-800")}>
+        <div class={"mx-auto max-w-7xl px-2 sm:px-6 lg-8"}>
+        <h1>{"Home page"}</h1>
+        </div>
+
+        </nav>
         </>
     }
 }
