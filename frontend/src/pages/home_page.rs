@@ -7,7 +7,6 @@ pub fn HomePage() -> Html {
     html! {
         <>
         <NavigationBar/>
-        <h1> {"Hello"}</h1>
         </>
     }
 }

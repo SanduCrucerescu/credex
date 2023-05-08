@@ -4,10 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
-
-h1 {
-    font-weight: bolder;
-}
+/* 
+@layer base {
+    html,
+    body {
+        @apply dark: bg-gray-900
+    }
+} */
