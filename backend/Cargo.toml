@@ -6,17 +6,16 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-actix-web = "4"
-actix-cors = "0.6.4"
+axum = "0.6.14"
+tokio = { version = "1.27.0", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 diesel = { version = "2.0.0", features = ["postgres", "r2d2", "chrono"] }
 dotenvy = "0.15"
-actix = "0.13.0"
 chrono = { version = "0.4.19", features = ["serde"] }
 bson = { version = "2", features = ["chrono-0_4"] }
-common = { path = "../common" }
 
+common = { path = "../common" }
 
 [dependencies.uuid]
 version = "1.2.2"

@@ -38,6 +38,7 @@ pub struct Transaction {
 
 #[derive(Queryable, Debug, Serialize, Deserialize)]
 pub struct Login {
-    pub email: String,
-    pub password: String,
+    // pub email: String,
+    // pub password: String,
+    pub client_id: String,
 }

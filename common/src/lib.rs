@@ -32,4 +32,5 @@ pub struct ErrorResponse {
 pub struct UserLoginResponse {
     pub status: String,
     pub message: String,
+    pub user_id: Option<String>,
 }
