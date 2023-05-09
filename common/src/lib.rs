@@ -2,14 +2,14 @@ use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
-pub struct Client {
+pub struct ClientModel {
     pub client_id: String,
     pub name: String,
     pub email: String,
     pub password: String,
-    #[serde(skip_serializing)]
-    #[serde(skip_deserializing)]
-    pub date_of_birth: NaiveDateTime,
+    // #[serde(skip_serializing)]
+    // #[serde(skip_deserializing)]
+    // pub date_of_birth: NaiveDateTime,
 }
 
 #[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]

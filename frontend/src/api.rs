@@ -1,7 +1,7 @@
-use common::{Client, ErrorResponse, UserLoginResponse};
+use common::{ClientModel, ErrorResponse, UserLoginResponse};
 use reqwasm::http;
 
-pub async fn api_fetch_client(client_id: &str) -> Result<Client, String> {
+pub async fn api_fetch_client(client_id: &str) -> Result<ClientModel, String> {
     let response = match http::Request::get(
         format!("http://127.0.0.1:8000/api/client/{}", client_id).as_str(),
     )
@@ -21,7 +21,7 @@ pub async fn api_fetch_client(client_id: &str) -> Result<Client, String> {
             return Err("API error".to_string());
         }
     }
-    let res_json = response.json::<Client>().await;
+    let res_json = response.json::<ClientModel>().await;
     match res_json {
         Ok(data) => Ok(data),
         Err(err) => Err(err.to_string()),

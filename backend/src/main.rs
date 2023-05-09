@@ -1,25 +1,12 @@
-use backend::db::{
-    db::{build_connection, AppState},
-    db_models::Client,
-    schema::clients::dsl::*,
+use backend::{
+    db::db::AppState,
+    server::{self, handlers::clients::clt_controler::ClientControler},
 };
 
 use diesel::{self, associations::HasTable, prelude::*};
-// use actix::SyncArbiter;
-// use actix_cors::Cors;
-// use actix_web::{
-//     middleware::Logger,
-//     web::{scope, Data},
-//     App, HttpServer,
-// };
-// use backend::{
-//     db::db_utils::{get_pool, AppState, DbActor},
-//     server::handlers::user_handler::{
-//         get_client, get_clients, get_user_transactions, post_login, post_user_transactions,
-//     },
-// };
 use dotenvy::dotenv;
 use std::{env, sync::Arc};
+use tower_http::{services::ServeDir, trace::TraceLayer};
 
 // #[actix_web::main]
 // async fn main() -> std::io::Result<()> {
@@ -57,20 +44,25 @@ use std::{env, sync::Arc};
 //     .run()
 //     .await
 // }
-use axum::{extract::State, http::header::CONTENT_TYPE, routing::get, Json, Router};
+use axum::{extract::State, http::header::CONTENT_TYPE, routing::get, Extension, Json, Router};
 use std::net::SocketAddr;
 
 #[tokio::main]
 async fn main() {
     dotenv().ok();
     let db_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let state = Arc::new(AppState {
-        db_pool: Arc::new(build_connection(&db_url)),
-    });
 
     let app = Router::new()
-        .route("/", get(handler))
-        .with_state(state)
+        .nest(
+            "/api",
+            Router::new().nest(
+                "/client",
+                server::handlers::clients::clt_routes::clt_routes(),
+            ),
+        )
+        // .with_state(Arc::new(AppState::new(&db_url)))
+        .layer(Extension::<Arc<AppState>>(Arc::new(AppState::new(&db_url))))
+        .layer(TraceLayer::new_for_http())
         .layer(
             tower_http::cors::CorsLayer::new()
                 .allow_origin(
@@ -88,21 +80,4 @@ async fn main() {
         .serve(app.into_make_service())
         .await
         .expect("Failed to start server");
-}
-
-async fn handler(State(state): State<Arc<AppState>>) {
-    let db = state.as_ref().db_pool.clone();
-    let conn = db.get().await;
-
-    // let res = clients
-    //     .filter(client_id.eq("C001"))
-    //     .get_result::<Client>(&mut conn);
-
-    // let db = state.as_ref().db_pool.clone();
-
-    // let mut conn = db.get();
-    // // .await
-    // // .expect("Fetch data: Unable to establish connection.");
-
-    // clients::table.count().get_results(&db);
 }
