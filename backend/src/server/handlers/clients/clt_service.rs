@@ -1,5 +1,5 @@
 use axum::Json;
-use common::{ClientLoginModel, ClientModel};
+use common::{responses::clt_responses::ClientLoginResponse, ClientLoginModel, ClientModel};
 use diesel::prelude::*;
 use diesel_async::{scoped_futures::ScopedFutureExt, AsyncPgConnection, RunQueryDsl};
 
@@ -28,12 +28,12 @@ impl ClientService {
     pub async fn post_client_login(
         conn: &mut AsyncPgConnection,
         login_details: &ClientLoginModel,
-    ) -> Result<ClientLoginModel, ClientServiceErr> {
+    ) -> Result<ClientLoginResponse, ClientServiceErr> {
         let client_login = clients
-            .select((email, password))
+            .select(client_id)
             .filter(email.eq(&login_details.email))
             .filter(password.eq(&login_details.password))
-            .get_result::<LoginDb>(conn)
+            .get_result::<String>(conn)
             .await
             .map_err(ClientServiceErr::from)?;
 

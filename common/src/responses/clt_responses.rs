@@ -18,8 +18,9 @@ impl IntoResponse for ClientResponse {
 }
 #[derive(Serialize, Deserialize)]
 pub struct ClientLoginResponse {
-    pub status: String,
-    pub msg: String,
+    pub status: Option<String>,
+    pub msg: Option<String>,
+    pub client_id: Option<String>,
 }
 
 impl IntoResponse for ClientLoginResponse {

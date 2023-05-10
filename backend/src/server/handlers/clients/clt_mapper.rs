@@ -1,4 +1,4 @@
-use common::{ClientLoginModel, ClientModel};
+use common::{responses::clt_responses::ClientLoginResponse, ClientLoginModel, ClientModel};
 
 use crate::db::db_models::{ClientDb, LoginDb};
 
@@ -14,10 +14,11 @@ impl ClientMappers {
             // date_of_birth: client_db.date_of_birth,
         }
     }
-    pub fn login_db(response: LoginDb) -> ClientLoginModel {
-        ClientLoginModel {
-            email: response.email,
-            password: response.password,
+    pub fn login_db(response: String) -> ClientLoginResponse {
+        ClientLoginResponse {
+            status: None,
+            msg: None,
+            client_id: Some(response),
         }
     }
 }

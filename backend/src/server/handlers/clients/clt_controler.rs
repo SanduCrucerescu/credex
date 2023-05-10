@@ -47,11 +47,13 @@ impl ClientControler {
             .map_err(|_| ClientControlerErr::ConnectionErr)?;
 
         match ClientService::post_client_login(conn.as_mut(), &payload).await {
-            Ok(info) => Ok(ClientLoginResponse {
-                status: "200".to_owned(),
-                msg: "Successfull".to_owned(),
-            }),
-            Err(_) => Err(ClientControlerErr::InternalError),
+            Ok(info) => {
+                let mut x = info;
+                x.status = Some("200".to_string());
+                x.msg = Some("Successfull".to_string());
+                Ok(x)
+            }
+            Err(_) => Err(ClientControlerErr::InvalidClient),
         }
     }
 }
