@@ -1,6 +1,6 @@
 use axum::{response::IntoResponse, Json};
 use chrono::NaiveDateTime;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize)]
 pub struct ClientResponse {
@@ -16,8 +16,14 @@ impl IntoResponse for ClientResponse {
         Json(self).into_response()
     }
 }
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ClientLoginResponse {
     pub status: String,
     pub msg: String,
+}
+
+impl IntoResponse for ClientLoginResponse {
+    fn into_response(self) -> axum::response::Response {
+        Json(self).into_response()
+    }
 }

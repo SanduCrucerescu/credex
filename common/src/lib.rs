@@ -1,3 +1,4 @@
+pub mod responses;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
@@ -32,16 +33,4 @@ pub struct Account {
 pub struct ErrorResponse {
     pub status: String,
     pub message: String,
-}
-
-// #[derive(Serialize, Debug, Deserialize)]
-// pub struct ClientLoginResponse {
-//     pub status: String,
-//     pub message: String,
-//     // pub user_id: Option<String>,
-// }
-#[derive(Serialize, Debug, Deserialize)]
-pub struct ClientLoginResponse {
-    pub status: String,
-    pub msg: String,
 }

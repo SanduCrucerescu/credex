@@ -1,14 +1,15 @@
 use axum::{
-    extract::{Path, State},
+    extract::{self, Path},
     http::StatusCode,
     response::IntoResponse,
     Extension, Json,
 };
+use common::ClientLoginModel;
 use std::sync::Arc;
 
+use super::clt_service::ClientService;
 use crate::db::db::{get_connection_from_pool, AppState};
-
-use super::{clt_responses::ClientResponse, clt_service::ClientService};
+use common::responses::clt_responses::{ClientLoginResponse, ClientResponse};
 
 pub struct ClientControler;
 
@@ -34,6 +35,23 @@ impl ClientControler {
                 }
                 _ => Err(ClientControlerErr::InternalError),
             },
+        }
+    }
+
+    pub async fn post_login(
+        Extension(state): Extension<Arc<AppState>>,
+        extract::Json(payload): extract::Json<ClientLoginModel>,
+    ) -> Result<ClientLoginResponse, ClientControlerErr> {
+        let mut conn = get_connection_from_pool(&state.db_pool)
+            .await
+            .map_err(|_| ClientControlerErr::ConnectionErr)?;
+
+        match ClientService::post_client_login(conn.as_mut(), &payload).await {
+            Ok(info) => Ok(ClientLoginResponse {
+                status: "200".to_owned(),
+                msg: "Successfull".to_owned(),
+            }),
+            Err(_) => Err(ClientControlerErr::InternalError),
         }
     }
 }

@@ -1,4 +1,4 @@
-use common::{ClientLoginResponse, ClientModel, ErrorResponse};
+use common::{responses::clt_responses::ClientLoginResponse, ClientModel, ErrorResponse};
 use reqwasm::http;
 
 pub async fn api_fetch_client(client_id: &str) -> Result<ClientModel, String> {
