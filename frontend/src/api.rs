@@ -1,4 +1,4 @@
-use common::{ClientModel, ErrorResponse, UserLoginResponse};
+use common::{ClientLoginResponse, ClientModel, ErrorResponse};
 use reqwasm::http;
 
 pub async fn api_fetch_client(client_id: &str) -> Result<ClientModel, String> {
@@ -28,7 +28,7 @@ pub async fn api_fetch_client(client_id: &str) -> Result<ClientModel, String> {
     }
 }
 
-pub async fn api_login_client(data: &str) -> Result<UserLoginResponse, String> {
+pub async fn api_login_client(data: &str) -> Result<ClientLoginResponse, String> {
     let response = match http::Request::post("http://127.0.0.1:8000/api/login")
         .header("Content-type", "application/json")
         .credentials(http::RequestCredentials::Include)
@@ -49,7 +49,7 @@ pub async fn api_login_client(data: &str) -> Result<UserLoginResponse, String> {
             return Err("API error".to_string());
         }
     }
-    let res_json = response.json::<UserLoginResponse>().await;
+    let res_json = response.json::<ClientLoginResponse>().await;
     match res_json {
         Ok(data) => Ok(data),
         Err(_) => Err("Failed to parse".to_string()),

@@ -15,19 +15,25 @@ pub struct ClientControler;
 impl ClientControler {
     pub async fn get_client(
         Extension(state): Extension<Arc<AppState>>,
+        Path(id): Path<String>,
     ) -> Result<ClientResponse, ClientControlerErr> {
         let mut conn = get_connection_from_pool(&state.db_pool)
             .await
-            .map_err(|_| ClientControlerErr::InternalError)?;
+            .map_err(|_| ClientControlerErr::ConnectionErr)?;
 
-        match ClientService::get_client_by_id(conn.as_mut()).await {
+        match ClientService::get_client_by_id(conn.as_mut(), &id).await {
             Ok(info) => Ok(ClientResponse {
                 client_id: info.client_id,
                 name: info.name,
                 email: info.email,
                 password: info.password,
             }),
-            _ => Err(ClientControlerErr::InternalError),
+            Err(e) => match e {
+                super::clt_service::ClientServiceErr::DoesNotExist => {
+                    Err(ClientControlerErr::InvalidClient)
+                }
+                _ => Err(ClientControlerErr::InternalError),
+            },
         }
     }
 }
@@ -41,9 +47,9 @@ pub enum ClientControlerErr {
 impl ClientControlerErr {
     pub fn error_message(&self) -> &'static str {
         match self {
-            Self::InternalError => "An error occurred while processing your request. Please try again later.",
-            Self::InvalidClient => "An account is already associated with that email. Please login or use a different email.",
-            Self::ConnectionErr => "Connection error"
+            Self::InternalError => "An error occurred while processing the request",
+            Self::InvalidClient => "Client does not exist",
+            Self::ConnectionErr => "Connection error",
         }
     }
 }

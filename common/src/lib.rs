@@ -13,6 +13,12 @@ pub struct ClientModel {
 }
 
 #[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
+pub struct ClientLoginModel {
+    pub email: String,
+    pub password: String,
+}
+
+#[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
 pub struct Account {
     pub acc_id: i32,
     pub client_id: String,
@@ -28,9 +34,14 @@ pub struct ErrorResponse {
     pub message: String,
 }
 
+// #[derive(Serialize, Debug, Deserialize)]
+// pub struct ClientLoginResponse {
+//     pub status: String,
+//     pub message: String,
+//     // pub user_id: Option<String>,
+// }
 #[derive(Serialize, Debug, Deserialize)]
-pub struct UserLoginResponse {
+pub struct ClientLoginResponse {
     pub status: String,
-    pub message: String,
-    pub user_id: Option<String>,
+    pub msg: String,
 }

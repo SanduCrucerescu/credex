@@ -16,3 +16,8 @@ impl IntoResponse for ClientResponse {
         Json(self).into_response()
     }
 }
+#[derive(Serialize)]
+pub struct ClientLoginResponse {
+    pub status: String,
+    pub msg: String,
+}
