@@ -8,9 +8,9 @@ pub struct ClientModel {
     pub name: String,
     pub email: String,
     pub password: String,
-    // #[serde(skip_serializing)]
-    // #[serde(skip_deserializing)]
-    // pub date_of_birth: NaiveDateTime,
+    #[serde(skip_serializing)]
+    #[serde(skip_deserializing)]
+    pub date_of_birth: NaiveDateTime,
 }
 
 #[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]

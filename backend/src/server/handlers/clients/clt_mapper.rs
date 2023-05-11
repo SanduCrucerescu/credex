@@ -1,6 +1,6 @@
 use common::{responses::clt_responses::ClientLoginResponse, ClientLoginModel, ClientModel};
 
-use crate::db::db_models::{ClientDb, LoginDb};
+use crate::db::db_models::ClientDb;
 
 pub struct ClientMappers;
 
@@ -11,7 +11,7 @@ impl ClientMappers {
             name: client_db.name,
             email: client_db.email,
             password: client_db.password,
-            // date_of_birth: client_db.date_of_birth,
+            date_of_birth: client_db.date_of_birth,
         }
     }
     pub fn login_db(response: String) -> ClientLoginResponse {

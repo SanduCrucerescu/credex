@@ -28,6 +28,7 @@ impl ClientControler {
                 name: info.name,
                 email: info.email,
                 password: info.password,
+                date_of_birth: info.date_of_birth,
             }),
             Err(e) => match e {
                 super::clt_service::ClientServiceErr::DoesNotExist => {

@@ -15,8 +15,8 @@ pub struct ClientDb {
     pub name: String,
     pub email: String,
     pub password: String,
-    // #[serde(skip_serializing)]
-    // pub date_of_birth: NaiveDateTime,
+    #[serde(skip_serializing)]
+    pub date_of_birth: NaiveDateTime,
 }
 
 #[derive(Queryable, Debug, Serialize)]
@@ -36,12 +36,4 @@ pub struct Transaction {
     pub amount: f32,
     #[serde(skip_serializing)]
     pub withdrawal_time: NaiveDateTime,
-}
-
-#[derive(Queryable, Debug, Serialize, Identifiable, Insertable)]
-#[diesel(primary_key(client_id), table_name = clients)]
-pub struct LoginDb {
-    // pub email: String,
-    // pub password: String,
-    pub client_id: String,
 }

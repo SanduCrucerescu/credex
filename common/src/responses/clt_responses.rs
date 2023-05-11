@@ -1,3 +1,4 @@
+#[cfg(feature = "back")]
 use axum::{response::IntoResponse, Json};
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
@@ -8,9 +9,11 @@ pub struct ClientResponse {
     pub name: String,
     pub email: String,
     pub password: String,
-    // pub date_of_birth: NaiveDateTime,
+    #[serde(skip_serializing)]
+    pub date_of_birth: NaiveDateTime,
 }
 
+#[cfg(feature = "back")]
 impl IntoResponse for ClientResponse {
     fn into_response(self) -> axum::response::Response {
         Json(self).into_response()
@@ -23,6 +26,7 @@ pub struct ClientLoginResponse {
     pub client_id: Option<String>,
 }
 
+#[cfg(feature = "back")]
 impl IntoResponse for ClientLoginResponse {
     fn into_response(self) -> axum::response::Response {
         Json(self).into_response()

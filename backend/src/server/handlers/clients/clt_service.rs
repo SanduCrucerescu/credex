@@ -3,10 +3,7 @@ use common::{responses::clt_responses::ClientLoginResponse, ClientLoginModel, Cl
 use diesel::prelude::*;
 use diesel_async::{scoped_futures::ScopedFutureExt, AsyncPgConnection, RunQueryDsl};
 
-use crate::db::{
-    db_models::{ClientDb, LoginDb},
-    schema::clients::dsl::*,
-};
+use crate::db::{db_models::ClientDb, schema::clients::dsl::*};
 
 use super::clt_mapper::ClientMappers;
 
