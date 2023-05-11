@@ -1,16 +1,16 @@
 use common::{responses::clt_responses::ClientLoginResponse, ClientModel, ErrorResponse};
-// use gloo_net::http::Request;
-use reqwasm::http::Request;
+use reqwasm::http;
 
 pub async fn api_fetch_client(client_id: &str) -> Result<ClientModel, String> {
-    let response =
-        match Request::get(format!("http://127.0.0.1:8000/api/client/{}", client_id).as_str())
-            .send()
-            .await
-        {
-            Ok(response) => response,
-            Err(_) => return Err("Failed to make a response".to_string()),
-        };
+    let response = match http::Request::get(
+        format!("http://127.0.0.1:8000/api/client/{}", client_id).as_str(),
+    )
+    .send()
+    .await
+    {
+        Ok(response) => response,
+        Err(_) => return Err("Failed to make a response".to_string()),
+    };
 
     if response.status() != 200 {
         let error_res = response.json::<ErrorResponse>().await;
@@ -29,9 +29,8 @@ pub async fn api_fetch_client(client_id: &str) -> Result<ClientModel, String> {
 }
 
 pub async fn api_login_client(data: &str) -> Result<ClientLoginResponse, String> {
-    let response = match Request::post("/api/client/login")
-        .header("Content-type", "application/json")
-        .credentials(RequestCredentials::Include)
+    let response = match http::Request::post("http://127.0.0.1:8000/api/client/login")
+        .header("Content-Type", "application/json")
         .body(data)
         .send()
         .await

@@ -22,18 +22,18 @@ async fn main() {
             ),
         )
         .layer(Extension::<Arc<AppState>>(Arc::new(AppState::new(&db_url))))
-        .layer(TraceLayer::new_for_http())
-        .layer(CorsLayer::permissive());
-    // .layer(
-    //     tower_http::cors::CorsLayer::new()
-    //         .allow_origin(
-    //             "http://127.0.0.1:8000"
-    //                 .parse::<axum::http::HeaderValue>()
-    //                 .unwrap(),
-    //         )
-    //         .allow_headers([CONTENT_TYPE])
-    //         .allow_methods([axum::http::Method::GET, axum::http::Method::POST]),
-    // );
+        .layer(CorsLayer::permissive())
+        // .layer(
+        //     tower_http::cors::CorsLayer::new()
+        //         .allow_origin(
+        //             "http://127.0.0.1:8000"
+        //                 .parse::<axum::http::HeaderValue>()
+        //                 .unwrap(),
+        //         )
+        //         .allow_headers([CONTENT_TYPE])
+        //         .allow_methods([axum::http::Method::GET, axum::http::Method::POST]),
+        // )
+        .layer(TraceLayer::new_for_http());
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8000));
     println!("Server started!");
