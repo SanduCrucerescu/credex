@@ -4,7 +4,10 @@ use axum::{
     response::IntoResponse,
     Extension, Json,
 };
-use common::ClientLoginModel;
+use common::{
+    responses::clt_responses::ClientCreationResponse, ClientCreateModel, ClientLoginModel,
+    ClientModel,
+};
 use std::sync::Arc;
 
 use super::clt_service::ClientService;
@@ -55,6 +58,23 @@ impl ClientControler {
                 Ok(x)
             }
             Err(_) => Err(ClientControlerErr::InvalidClient),
+        }
+    }
+
+    pub async fn post_client(
+        Extension(state): Extension<Arc<AppState>>,
+        extract::Json(payload): extract::Json<ClientCreateModel>,
+    ) -> Result<ClientCreationResponse, ClientControlerErr> {
+        let mut conn = get_connection_from_pool(&state.db_pool)
+            .await
+            .map_err(|_| ClientControlerErr::ConnectionErr)?;
+
+        match ClientService::post_new_client(conn.as_mut(), payload).await {
+            Ok(_) => Ok(ClientCreationResponse {
+                status: "200".to_string(),
+                msg: "Client creaded successfuly".to_string(),
+            }),
+            Err(_) => Err(ClientControlerErr::InternalError),
         }
     }
 }

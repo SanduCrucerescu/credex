@@ -32,3 +32,16 @@ impl IntoResponse for ClientLoginResponse {
         Json(self).into_response()
     }
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct ClientCreationResponse {
+    pub status: String,
+    pub msg: String,
+}
+
+#[cfg(feature = "back")]
+impl IntoResponse for ClientCreationResponse {
+    fn into_response(self) -> axum::response::Response {
+        Json(self).into_response()
+    }
+}

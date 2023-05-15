@@ -1,7 +1,10 @@
 use axum::Json;
-use common::{responses::clt_responses::ClientLoginResponse, ClientLoginModel, ClientModel};
-use diesel::prelude::*;
+use common::{
+    responses::clt_responses::ClientLoginResponse, ClientCreateModel, ClientLoginModel, ClientModel,
+};
+use diesel::{insert_into, prelude::*};
 use diesel_async::{scoped_futures::ScopedFutureExt, AsyncPgConnection, RunQueryDsl};
+use uuid::Uuid;
 
 use crate::db::{db_models::ClientDb, schema::clients::dsl::*};
 
@@ -35,6 +38,35 @@ impl ClientService {
             .map_err(ClientServiceErr::from)?;
 
         Ok(ClientMappers::login_db(client_login))
+    }
+
+    pub async fn post_new_client(
+        conn: &mut AsyncPgConnection,
+        new_client: ClientCreateModel,
+    ) -> Result<ClientModel, ClientServiceErr> {
+        let id = Uuid::new_v4().to_string();
+        let new_client = conn
+            .build_transaction()
+            .read_write()
+            .run(|conn| {
+                async move {
+                    let client = insert_into(clients)
+                        .values((
+                            client_id.eq(&id),
+                            name.eq(new_client.name),
+                            email.eq(new_client.email),
+                            password.eq(new_client.password),
+                            date_of_birth.eq(new_client.date_of_birth),
+                        ))
+                        .get_result::<ClientDb>(conn)
+                        .await?;
+                    Ok(client)
+                }
+                .scope_boxed()
+            })
+            .await
+            .map_err(|err: diesel::result::Error| ClientServiceErr::from(err))?;
+        Ok(ClientMappers::client_db(new_client))
     }
 }
 
