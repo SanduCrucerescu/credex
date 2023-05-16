@@ -1,7 +1,7 @@
 #![allow(unused)]
 #![allow(clippy::all)]
 
-use super::schema::clients;
+use super::schema::{accounts, clients};
 use chrono::NaiveDateTime;
 use chrono::{offset::Utc, serde::ts_seconds, DateTime};
 use diesel::{Identifiable, Insertable, Queryable};
@@ -19,8 +19,9 @@ pub struct ClientDb {
     pub date_of_birth: NaiveDateTime,
 }
 
-#[derive(Queryable, Debug, Serialize)]
-pub struct Account {
+#[derive(Queryable, Debug, Serialize, Identifiable, Insertable)]
+#[diesel(primary_key(acc_id), table_name = accounts)]
+pub struct AccountDb {
     pub acc_id: i32,
     pub client_id: String,
     pub balance: f32,

@@ -1,12 +1,16 @@
 use axum::Json;
+use chrono::NaiveDateTime;
 use common::{
     responses::clt_responses::ClientLoginResponse, ClientCreateModel, ClientLoginModel, ClientModel,
 };
-use diesel::{insert_into, prelude::*};
+use diesel::{dsl, insert_into, prelude::*};
 use diesel_async::{scoped_futures::ScopedFutureExt, AsyncPgConnection, RunQueryDsl};
 use uuid::Uuid;
 
-use crate::db::{db_models::ClientDb, schema::clients::dsl::*};
+use crate::db::{
+    db_models::{AccountDb, ClientDb},
+    schema::{accounts, clients},
+};
 
 use super::clt_mapper::ClientMappers;
 
@@ -17,8 +21,8 @@ impl ClientService {
         conn: &mut AsyncPgConnection,
         id: &str,
     ) -> Result<ClientModel, ClientServiceErr> {
-        let client = clients
-            .filter(client_id.eq(id))
+        let client = clients::table
+            .filter(clients::client_id.eq(id))
             .get_result::<ClientDb>(conn)
             .await
             .map_err(ClientServiceErr::from)?;
@@ -29,10 +33,10 @@ impl ClientService {
         conn: &mut AsyncPgConnection,
         login_details: &ClientLoginModel,
     ) -> Result<ClientLoginResponse, ClientServiceErr> {
-        let client_login = clients
-            .select(client_id)
-            .filter(email.eq(&login_details.email))
-            .filter(password.eq(&login_details.password))
+        let client_login = clients::table
+            .select(clients::client_id)
+            .filter(clients::email.eq(&login_details.email))
+            .filter(clients::password.eq(&login_details.password))
             .get_result::<String>(conn)
             .await
             .map_err(ClientServiceErr::from)?;
@@ -50,16 +54,27 @@ impl ClientService {
             .read_write()
             .run(|conn| {
                 async move {
-                    let client = insert_into(clients)
+                    let client = insert_into(clients::table)
                         .values((
-                            client_id.eq(&id),
-                            name.eq(new_client.name),
-                            email.eq(new_client.email),
-                            password.eq(new_client.password),
-                            date_of_birth.eq(new_client.date_of_birth),
+                            clients::client_id.eq(&id),
+                            clients::name.eq(new_client.name),
+                            clients::email.eq(new_client.email),
+                            clients::password.eq(new_client.password),
+                            clients::date_of_birth.eq(new_client.date_of_birth),
                         ))
                         .get_result::<ClientDb>(conn)
                         .await?;
+
+                    let acc = insert_into(accounts::table)
+                        .values((
+                            accounts::acc_id.eq(4342423),
+                            accounts::client_id.eq(&id),
+                            accounts::balance.eq(0.0),
+                            accounts::acc_activation_date.eq(dsl::now),
+                        ))
+                        .get_result::<AccountDb>(conn)
+                        .await?;
+
                     Ok(client)
                 }
                 .scope_boxed()
