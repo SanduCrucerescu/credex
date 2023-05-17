@@ -17,65 +17,70 @@ use common::responses::clt_responses::{ClientLoginResponse, ClientResponse};
 pub struct ClientControler;
 
 impl ClientControler {
-    pub async fn get_client(
-        Extension(state): Extension<Arc<AppState>>,
-        Path(id): Path<String>,
-    ) -> Result<ClientResponse, ClientControlerErr> {
-        let mut conn = get_connection_from_pool(&state.db_pool)
-            .await
-            .map_err(|_| ClientControlerErr::ConnectionErr)?;
+    // pub async fn get_client(
+    //     Extension(state): Extension<Arc<AppState>>,
+    //     Path(id): Path<String>,
+    // ) -> Result<ClientResponse, ClientControlerErr> {
+    //     let mut conn = get_connection_from_pool(&state.db_pool)
+    //         .await
+    //         .map_err(|_| ClientControlerErr::ConnectionErr)?;
 
-        match ClientService::get_client_by_id(conn.as_mut(), &id).await {
-            Ok(info) => Ok(ClientResponse {
-                client_id: info.client_id,
-                name: info.name,
-                email: info.email,
-                password: info.password,
-                date_of_birth: info.date_of_birth,
-            }),
-            Err(e) => match e {
-                super::clt_service::ClientServiceErr::DoesNotExist => {
-                    Err(ClientControlerErr::InvalidClient)
-                }
-                _ => Err(ClientControlerErr::InternalError),
-            },
-        }
-    }
+    //     match ClientService::get_client_by_id(conn.as_mut(), &id).await {
+    //         Ok(info) => Ok(ClientResponse {
+    //             client_id: info.client_id,
+    //             name: info.name,
+    //             email: info.email,
+    //             password: info.password,
+    //             date_of_birth: info.date_of_birth,
+    //         }),
+    //         Err(e) => match e {
+    //             super::clt_service::ClientServiceErr::DoesNotExist => {
+    //                 Err(ClientControlerErr::InvalidClient)
+    //             }
+    //             _ => Err(ClientControlerErr::InternalError),
+    //         },
+    //     }
+    // }
 
-    pub async fn post_login(
-        Extension(state): Extension<Arc<AppState>>,
-        extract::Json(payload): extract::Json<ClientLoginModel>,
-    ) -> Result<ClientLoginResponse, ClientControlerErr> {
-        let mut conn = get_connection_from_pool(&state.db_pool)
-            .await
-            .map_err(|_| ClientControlerErr::ConnectionErr)?;
+    // pub async fn post_login(
+    //     Extension(state): Extension<Arc<AppState>>,
+    //     extract::Json(payload): extract::Json<ClientLoginModel>,
+    // ) -> Result<ClientLoginResponse, ClientControlerErr> {
+    //     let mut conn = get_connection_from_pool(&state.db_pool)
+    //         .await
+    //         .map_err(|_| ClientControlerErr::ConnectionErr)?;
 
-        match ClientService::post_client_login(conn.as_mut(), &payload).await {
-            Ok(info) => {
-                let mut x = info;
-                x.status = Some("200".to_string());
-                x.msg = Some("Successfull".to_string());
-                Ok(x)
-            }
-            Err(_) => Err(ClientControlerErr::InvalidClient),
-        }
-    }
+    //     match ClientService::post_client_login(conn.as_mut(), &payload).await {
+    //         Ok(info) => {
+    //             let mut x = info;
+    //             x.status = Some("200".to_string());
+    //             x.msg = Some("Successfull".to_string());
+    //             Ok(x)
+    //         }
+    //         Err(_) => Err(ClientControlerErr::InvalidClient),
+    //     }
+    // }
 
     pub async fn post_client(
-        Extension(state): Extension<Arc<AppState>>,
+        // Extension(state): Extension<Arc<AppState>>,
         extract::Json(payload): extract::Json<ClientCreateModel>,
     ) -> Result<ClientCreationResponse, ClientControlerErr> {
-        let mut conn = get_connection_from_pool(&state.db_pool)
-            .await
-            .map_err(|_| ClientControlerErr::ConnectionErr)?;
+        // let mut conn = get_connection_from_pool(&state.db_pool)
+        //     .await
+        //     .map_err(|_| ClientControlerErr::ConnectionErr)?;
 
-        match ClientService::post_new_client(conn.as_mut(), payload).await {
-            Ok(_) => Ok(ClientCreationResponse {
-                status: "200".to_string(),
-                msg: "Client creaded successfuly".to_string(),
-            }),
-            Err(_) => Err(ClientControlerErr::InternalError),
-        }
+        // match ClientService::post_new_client(payload).await {
+        //     Ok(_) => Ok(ClientCreationResponse {
+        //         status: "200".to_string(),
+        //         msg: "Client creaded successfuly".to_string(),
+        //     }),
+        //     Err(_) => Err(ClientControlerErr::InternalError),
+        // }
+        ClientService::post_new_client(payload).await;
+        Ok(ClientCreationResponse {
+            status: "200".to_string(),
+            msg: "Client creaded successfuly".to_string(),
+        })
     }
 }
 

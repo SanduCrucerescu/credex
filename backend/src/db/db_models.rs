@@ -1,6 +1,8 @@
 #![allow(unused)]
 #![allow(clippy::all)]
 
+use std::time::SystemTime;
+
 use super::schema::{accounts, clients};
 use chrono::NaiveDateTime;
 use chrono::{offset::Utc, serde::ts_seconds, DateTime};
@@ -8,7 +10,7 @@ use diesel::{Identifiable, Insertable, Queryable};
 use serde::Deserialize;
 use serde::Serialize;
 
-#[derive(Queryable, Debug, Serialize, Identifiable, Insertable)]
+#[derive(Queryable, Debug, Serialize, Identifiable, Insertable, Deserialize)]
 #[diesel(primary_key(client_id), table_name = clients)]
 pub struct ClientDb {
     pub client_id: String,
@@ -16,7 +18,7 @@ pub struct ClientDb {
     pub email: String,
     pub password: String,
     #[serde(skip_serializing)]
-    pub date_of_birth: NaiveDateTime,
+    pub date_of_birth: SystemTime,
 }
 
 #[derive(Queryable, Debug, Serialize, Identifiable, Insertable)]

@@ -22,6 +22,7 @@ diesel-async = { version = "0.2.2", features = ["postgres", "deadpool"] }
 deadpool-runtime = { version = "0.1.2", features = ["tokio_1"] }
 url = { version = "2.3.1", features = ["serde"] }
 common = { path = "../common", features = ["back"] }
+surrealdb = "1.0.0-beta.9"
 
 [dependencies.uuid]
 version = "1.2.2"
