@@ -1,6 +1,6 @@
 use common::{responses::clt_responses::ClientLoginResponse, ClientLoginModel, ClientModel};
 
-use crate::db::db_models::ClientDb;
+use crate::{db::db_models::ClientDb, utils::macros::map};
 
 pub struct ClientMappers;
 

@@ -8,10 +8,17 @@ use common::{
     responses::clt_responses::ClientCreationResponse, ClientCreateModel, ClientLoginModel,
     ClientModel,
 };
-use std::sync::Arc;
+use std::{sync::Arc, time::SystemTime};
 
 use super::clt_service::ClientService;
-use crate::db::db::{get_connection_from_pool, AppState};
+use crate::{
+    db::{
+        db::{get_connection_from_pool, AppState},
+        db_models::ClientDb,
+    },
+    error::Error,
+    DBS,
+};
 use common::responses::clt_responses::{ClientLoginResponse, ClientResponse};
 
 pub struct ClientControler;
@@ -64,7 +71,7 @@ impl ClientControler {
     pub async fn post_client(
         // Extension(state): Extension<Arc<AppState>>,
         extract::Json(payload): extract::Json<ClientCreateModel>,
-    ) -> Result<ClientCreationResponse, ClientControlerErr> {
+    ) -> Result<Json<ClientModel>, Error> {
         // let mut conn = get_connection_from_pool(&state.db_pool)
         //     .await
         //     .map_err(|_| ClientControlerErr::ConnectionErr)?;
@@ -76,11 +83,24 @@ impl ClientControler {
         //     }),
         //     Err(_) => Err(ClientControlerErr::InternalError),
         // }
-        ClientService::post_new_client(payload).await;
-        Ok(ClientCreationResponse {
-            status: "200".to_string(),
-            msg: "Client creaded successfuly".to_string(),
-        })
+        // ClientService::post_new_client(payload).await;
+        // Ok(ClientCreationResponse {
+        //     status: "200".to_string(),
+        //     msg: "Client creaded successfuly".to_string(),
+        // })
+
+        let t = DBS
+            .create(("person", "fdgtrterger"))
+            .content(ClientModel {
+                client_id: "fghytgrtf".to_string(),
+                name: "ttttttttt".to_string(),
+                email: "restds".to_string(),
+                password: "ereed".to_string(),
+                date_of_birth: SystemTime::now(),
+            })
+            .await?;
+        // println!("{:?}", t);
+        Ok(Json(t))
     }
 }
 

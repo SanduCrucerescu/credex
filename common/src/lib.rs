@@ -1,16 +1,14 @@
 pub mod responses;
-use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
+use std::time::SystemTime;
 
-#[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct ClientModel {
     pub client_id: String,
     pub name: String,
     pub email: String,
     pub password: String,
-    #[serde(skip_serializing)]
-    #[serde(skip_deserializing)]
-    pub date_of_birth: NaiveDateTime,
+    pub date_of_birth: SystemTime,
 }
 
 #[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
@@ -18,9 +16,7 @@ pub struct ClientCreateModel {
     pub name: String,
     pub email: String,
     pub password: String,
-    #[serde(skip_serializing)]
-    #[serde(skip_deserializing)]
-    pub date_of_birth: NaiveDateTime,
+    pub date_of_birth: SystemTime,
 }
 
 #[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
@@ -34,9 +30,7 @@ pub struct Account {
     pub acc_id: i32,
     pub client_id: String,
     pub balance: f64,
-    #[serde(skip_serializing)]
-    #[serde(skip_deserializing)]
-    pub acc_activation_date: NaiveDateTime,
+    pub acc_activation_date: SystemTime,
 }
 
 #[derive(Serialize, Debug, Deserialize)]

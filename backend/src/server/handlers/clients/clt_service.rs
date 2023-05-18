@@ -11,9 +11,12 @@ use serde::Deserialize;
 use surrealdb::sql::Thing;
 use uuid::Uuid;
 
-use crate::db::{
-    db_models::{AccountDb, ClientDb},
-    schema::{accounts, clients},
+use crate::{
+    db::{
+        db_models::{AccountDb, ClientDb},
+        schema::{accounts, clients},
+    },
+    error::Error,
 };
 #[derive(Debug, Deserialize)]
 struct Record {
@@ -57,8 +60,7 @@ impl ClientService {
     pub async fn post_new_client(
         // conn: &mut AsyncPgConnection,
         new_client: ClientCreateModel,
-    ) {
-        // ) -> Result<ClientDb, ClientServiceErr> {
+    ) -> Result<ClientDb, Error> {
         let id = Uuid::new_v4().to_string();
         // let new_client = conn
         //     .build_transaction()
@@ -92,9 +94,8 @@ impl ClientService {
         //     })
         //     .await?;
         // .map_err(|err: diesel::result::Error| ClientServiceErr::from(err))?;
-
-        let t: Record = DBS
-            .create(("person", "sdsddsddsdsftrgtrg"))
+        let t = DBS
+            .create(("person", "dfdfdsfff"))
             .content(ClientDb {
                 client_id: id,
                 name: "ttttttttt".to_string(),
@@ -102,27 +103,18 @@ impl ClientService {
                 password: "ereed".to_string(),
                 date_of_birth: SystemTime::now(),
             })
-            .await
-            .expect("msg");
+            .await?;
         println!("{:?}", t);
-
-        // match t {
-        //     Ok(i) => i,
-        //     Err(_) => {
-        //         // println!("{}", err);
-        //         Err(ClientServiceErr::DbError)
-        //     }
-        // }
-        // Ok(ClientMappers::client_db(new_client))
+        Ok(t)
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub enum ClientServiceErr {
-    DoesNotExist,
-    DbError,
-    AlreadyExists,
-}
+// #[derive(Error, Debug)]
+// pub enum ClientServiceErr {
+//     DoesNotExist,
+//     DbError,
+//     AlreadyExists,
+// }
 
 // impl From<diesel::result::Error> for ClientServiceErr {
 //     fn from(diesel_err: diesel::result::Error) -> Self {
