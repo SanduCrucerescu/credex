@@ -36,35 +36,3 @@ impl From<surrealdb::Error> for Error {
         Self::Db
     }
 }
-
-// impl axum::response::Response for Error {}
-
-// impl From<Error> for String {
-//     fn from(e: Error) -> String {
-//         e.to_string()
-//     }
-// }
-
-// impl From<base64::DecodeError> for Error {
-//     fn from(_: base64::DecodeError) -> Self {
-//         Error::InvalidAuth
-//     }
-// }
-
-// impl From<std::string::FromUtf8Error> for Error {
-//     fn from(_: std::string::FromUtf8Error) -> Self {
-//         Error::InvalidAuth
-//     }
-// }
-
-// impl From<jsonwebtoken::errors::Error> for Error {
-//     fn from(_: jsonwebtoken::errors::Error) -> Self {
-//         Error::InvalidAuth
-//     }
-// }
-
-// impl From<surrealdb::error::Db> for Error {
-//     fn from(value: surrealdb::error::Db) -> Self {
-//         Error::Db(value.into())
-//     }
-// }

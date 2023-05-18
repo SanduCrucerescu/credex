@@ -2,6 +2,6 @@
 
 Banking web application writen primarily in Rust.
 <ul>
-    <li> Actix - API
-    <li> Diesel - ORM
+    <li> Axum - API
+    <li> SurrealDB - as database
     <li> Yew - front-end

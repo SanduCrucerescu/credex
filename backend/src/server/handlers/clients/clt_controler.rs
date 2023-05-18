@@ -10,15 +10,7 @@ use common::{
 };
 use std::{sync::Arc, time::SystemTime};
 
-use super::clt_service::ClientService;
-use crate::{
-    db::{
-        db::{get_connection_from_pool, AppState},
-        db_models::ClientDb,
-    },
-    error::Error,
-    DBS,
-};
+use crate::{error::Error, DBS};
 use common::responses::clt_responses::{ClientLoginResponse, ClientResponse};
 
 pub struct ClientControler;

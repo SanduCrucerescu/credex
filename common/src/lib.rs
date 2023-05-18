@@ -2,7 +2,7 @@ pub mod responses;
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Clone, PartialEq, Deserialize)]
 pub struct ClientModel {
     pub client_id: String,
     pub name: String,

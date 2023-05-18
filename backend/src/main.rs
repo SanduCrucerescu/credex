@@ -1,29 +1,29 @@
-use backend::db::db::AppState;
-
-use axum::{http::header::CONTENT_TYPE, Extension, Router};
+use axum::Router;
 use backend::{server, DBS};
 use dotenvy::dotenv;
-use serde::{Deserialize, Serialize};
+use std::env;
 use std::net::SocketAddr;
-use std::{env, sync::Arc};
-use surrealdb::engine::remote::ws::{Client, Ws};
+use surrealdb::engine::remote::ws::Ws;
 use surrealdb::opt::auth::Root;
-use surrealdb::sql::Thing;
-use surrealdb::Surreal;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
 
 #[tokio::main]
 async fn main() -> surrealdb::Result<()> {
-    //dotenv().ok();
-    //let db_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    DBS.connect::<Ws>("127.0.0.1:8000").await?;
+    dotenv().ok();
+    let db_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let username = env::var("SurrealDB_USERNAME").expect("Username must be set");
+    let pass = env::var("SurrealDB_PASSWORD").expect("Password must be set");
+    let ns = env::var("SurrealDB_NS").expect("NS must be set");
+    let db = env::var("SurrealDB_DB").expect("DB must be set");
+
+    DBS.connect::<Ws>(db_url).await?;
     DBS.signin(Root {
-        username: "root",
-        password: "123",
+        username: &username,
+        password: &pass,
     })
     .await?;
-    DBS.use_ns("credex").use_db("credex").await?;
+    DBS.use_ns(ns).use_db(db).await?;
 
     let app = Router::new()
         .nest(
@@ -33,7 +33,6 @@ async fn main() -> surrealdb::Result<()> {
                 server::handlers::clients::clt_routes::clt_routes(),
             ),
         )
-        //.layer(Extension::<Arc<AppState>>(Arc::new(AppState::new(&db_url))))
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http());
 
