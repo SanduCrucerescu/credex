@@ -1,6 +1,5 @@
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde_json::Error as JsonError;
-use surrealdb::Error as SurrealError;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -22,6 +21,9 @@ pub enum Error {
 
     #[error("There was a problem eith authentication.")]
     InvalidAuth,
+
+    #[error(transparent)]
+    Surreal(#[from] surrealdb::Error),
 }
 
 impl IntoResponse for Error {
@@ -30,9 +32,9 @@ impl IntoResponse for Error {
     }
 }
 
-impl From<surrealdb::Error> for Error {
-    fn from(value: surrealdb::Error) -> Self {
-        eprintln!("{value}");
-        Self::Db
-    }
-}
+// impl From<surrealdb::Error> for Error {
+//     fn from(value: surrealdb::Error) -> Self {
+//         eprintln!("{value}");
+//         Self::Db
+//     }
+// }

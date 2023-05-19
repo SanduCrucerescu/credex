@@ -2,44 +2,25 @@ use axum::{
     extract::{self, Path},
     http::StatusCode,
     response::IntoResponse,
-    Extension, Json,
+    Json,
 };
-use common::{
-    responses::clt_responses::ClientCreationResponse, ClientCreateModel, ClientLoginModel,
-    ClientModel,
-};
-use std::{sync::Arc, time::SystemTime};
+use common::ClientModel;
+use surrealdb::sql::Datetime;
 
 use crate::{error::Error, DBS};
-use common::responses::clt_responses::{ClientLoginResponse, ClientResponse};
 
 pub struct ClientControler;
 
 impl ClientControler {
-    // pub async fn get_client(
-    //     Extension(state): Extension<Arc<AppState>>,
-    //     Path(id): Path<String>,
-    // ) -> Result<ClientResponse, ClientControlerErr> {
-    //     let mut conn = get_connection_from_pool(&state.db_pool)
-    //         .await
-    //         .map_err(|_| ClientControlerErr::ConnectionErr)?;
-
-    //     match ClientService::get_client_by_id(conn.as_mut(), &id).await {
-    //         Ok(info) => Ok(ClientResponse {
-    //             client_id: info.client_id,
-    //             name: info.name,
-    //             email: info.email,
-    //             password: info.password,
-    //             date_of_birth: info.date_of_birth,
-    //         }),
-    //         Err(e) => match e {
-    //             super::clt_service::ClientServiceErr::DoesNotExist => {
-    //                 Err(ClientControlerErr::InvalidClient)
-    //             }
-    //             _ => Err(ClientControlerErr::InternalError),
-    //         },
-    //     }
-    // }
+    pub async fn get_client(Path(id): Path<String>) -> Result<Json<ClientModel>, Error> {
+        let client: Option<ClientModel> = DBS.select(("client", id.clone())).await?;
+        match client {
+            Some(info) => Ok(Json(info)),
+            None => Err(Error::Surreal(surrealdb::Error::Db(
+                surrealdb::error::Db::IdInvalid { value: id.clone() },
+            ))),
+        }
+    }
 
     // pub async fn post_login(
     //     Extension(state): Extension<Arc<AppState>>,
@@ -61,59 +42,17 @@ impl ClientControler {
     // }
 
     pub async fn post_client(
-        // Extension(state): Extension<Arc<AppState>>,
-        extract::Json(payload): extract::Json<ClientCreateModel>,
+        extract::Json(payload): extract::Json<ClientModel>,
     ) -> Result<Json<ClientModel>, Error> {
-        // let mut conn = get_connection_from_pool(&state.db_pool)
-        //     .await
-        //     .map_err(|_| ClientControlerErr::ConnectionErr)?;
-
-        // match ClientService::post_new_client(payload).await {
-        //     Ok(_) => Ok(ClientCreationResponse {
-        //         status: "200".to_string(),
-        //         msg: "Client creaded successfuly".to_string(),
-        //     }),
-        //     Err(_) => Err(ClientControlerErr::InternalError),
-        // }
-        // ClientService::post_new_client(payload).await;
-        // Ok(ClientCreationResponse {
-        //     status: "200".to_string(),
-        //     msg: "Client creaded successfuly".to_string(),
-        // })
-
-        let t = DBS
-            .create(("person", "fdgtrterger"))
+        let client = DBS
+            .create("client")
             .content(ClientModel {
-                client_id: "fghytgrtf".to_string(),
-                name: "ttttttttt".to_string(),
-                email: "restds".to_string(),
-                password: "ereed".to_string(),
-                date_of_birth: SystemTime::now(),
+                name: payload.name.to_string(),
+                email: payload.email.to_string(),
+                password: payload.password.to_string(),
+                date_of_birth: Datetime::from(payload.date_of_birth),
             })
             .await?;
-        // println!("{:?}", t);
-        Ok(Json(t))
-    }
-}
-
-pub enum ClientControlerErr {
-    InternalError,
-    InvalidClient,
-    ConnectionErr,
-}
-
-impl ClientControlerErr {
-    pub fn error_message(&self) -> &'static str {
-        match self {
-            Self::InternalError => "An error occurred while processing the request",
-            Self::InvalidClient => "Client does not exist",
-            Self::ConnectionErr => "Connection error",
-        }
-    }
-}
-
-impl IntoResponse for ClientControlerErr {
-    fn into_response(self) -> axum::response::Response {
-        (StatusCode::BAD_REQUEST, self.error_message()).into_response()
+        Ok(Json(client))
     }
 }

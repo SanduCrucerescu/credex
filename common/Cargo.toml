@@ -12,3 +12,4 @@ front = []
 axum = { version = "0.6.14", optional = true }
 serde = { version = "1.0", features = ["derive"] }
 chrono = "0.4.19"
+surrealdb = "1.0.0-beta.9"

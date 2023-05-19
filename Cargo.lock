@@ -483,6 +483,7 @@ dependencies = [
  "axum",
  "chrono",
  "serde",
+ "surrealdb",
 ]
 
 [[package]]
