@@ -1,3 +1,4 @@
+use chrono::serde::ts_seconds;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "back")]
@@ -8,8 +9,7 @@ pub struct ClientModel {
     pub name: String,
     pub email: String,
     pub password: String,
-    #[serde(skip_serializing)]
-    #[serde(skip_deserializing)]
+    #[serde(with = "ts_seconds")]
     pub date_of_birth: DateTime<Utc>,
 }
 
@@ -18,8 +18,7 @@ pub struct ClientInsertModel {
     pub name: String,
     pub email: String,
     pub password: String,
-    #[serde(skip_serializing)]
-    #[serde(skip_deserializing)]
+    #[serde(with = "ts_seconds")]
     pub date_of_birth: DateTime<Utc>,
     pub account: AccountModel,
 }
@@ -43,7 +42,6 @@ pub struct ClientLoginRespons {
 #[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
 pub struct AccountModel {
     pub balance: f64,
-    #[serde(skip_serializing)]
-    #[serde(skip_deserializing)]
+    #[serde(with = "ts_seconds")]
     pub acc_activation_date: DateTime<Utc>,
 }
