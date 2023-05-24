@@ -1,8 +1,8 @@
 pub mod responses;
 use serde::{Deserialize, Serialize};
-use surrealdb::sql::Datetime;
+use surrealdb::sql::{Datetime, Thing};
 
-#[derive(Serialize, Clone, PartialEq, Deserialize)]
+#[derive(Serialize, Clone, Debug, PartialEq, Deserialize)]
 pub struct ClientModel {
     pub name: String,
     pub email: String,
@@ -16,16 +16,15 @@ pub struct ClientLoginModel {
     pub password: String,
 }
 
+#[derive(Serialize, Debug, Deserialize)]
+pub struct ClientLoginResponse {
+    pub id: Thing,
+}
+
 #[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
 pub struct Account {
     pub acc_id: i32,
     pub client_id: String,
     pub balance: f64,
     pub acc_activation_date: Datetime,
-}
-
-#[derive(Serialize, Debug, Deserialize)]
-pub struct ErrorResponse {
-    pub status: String,
-    pub message: String,
 }

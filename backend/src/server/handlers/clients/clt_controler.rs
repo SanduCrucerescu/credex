@@ -1,14 +1,18 @@
 use axum::{
     extract::{self, Path},
-    http::StatusCode,
-    response::IntoResponse,
     Json,
 };
-use common::ClientModel;
-use surrealdb::sql::Datetime;
+use common::{ClientLoginModel, ClientLoginResponse, ClientModel};
+use serde::{Deserialize, Serialize};
+use surrealdb::sql::{thing, Datetime, Thing};
 
 use crate::{error::Error, DBS};
-
+#[derive(Debug, Serialize, Deserialize)]
+#[allow(dead_code)]
+struct User {
+    name: String,
+    company: String,
+}
 pub struct ClientControler;
 
 impl ClientControler {
@@ -22,24 +26,24 @@ impl ClientControler {
         }
     }
 
-    // pub async fn post_login(
-    //     Extension(state): Extension<Arc<AppState>>,
-    //     extract::Json(payload): extract::Json<ClientLoginModel>,
-    // ) -> Result<ClientLoginResponse, ClientControlerErr> {
-    //     let mut conn = get_connection_from_pool(&state.db_pool)
-    //         .await
-    //         .map_err(|_| ClientControlerErr::ConnectionErr)?;
-
-    //     match ClientService::post_client_login(conn.as_mut(), &payload).await {
-    //         Ok(info) => {
-    //             let mut x = info;
-    //             x.status = Some("200".to_string());
-    //             x.msg = Some("Successfull".to_string());
-    //             Ok(x)
-    //         }
-    //         Err(_) => Err(ClientControlerErr::InvalidClient),
-    //     }
-    // }
+    pub async fn get_login(
+        extract::Json(payload): extract::Json<ClientLoginModel>,
+    ) -> Result<Json<ClientLoginResponse>, Error> {
+        let querry = format!(
+            "SELECT id from client WHERE email = '{}' AND password = '{}';",
+            payload.email, payload.password,
+        );
+        let mut login = DBS.query(querry).await?;
+        let res: Option<ClientLoginResponse> = login.take(0)?;
+        match res {
+            Some(info) => Ok(Json(info)),
+            None => Err(Error::Surreal(surrealdb::Error::Db(
+                surrealdb::error::Db::ScNotFound {
+                    value: payload.email,
+                },
+            ))),
+        }
+    }
 
     pub async fn post_client(
         extract::Json(payload): extract::Json<ClientModel>,

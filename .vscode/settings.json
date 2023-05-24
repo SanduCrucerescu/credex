@@ -8,5 +8,8 @@
     "rust-analyzer.showUnlinkedFileNotification": false,
     "emmet.includeLanguages": {
         "rust": "html",
-    }
+    },
+    // "material-icon-theme.files.associations": {
+    //     "fileName.surrealql": "../../icons/surreal"
+    // }
 }
