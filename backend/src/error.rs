@@ -31,10 +31,3 @@ impl IntoResponse for Error {
         (StatusCode::INTERNAL_SERVER_ERROR, Json(self.to_string())).into_response()
     }
 }
-
-// impl From<surrealdb::Error> for Error {
-//     fn from(value: surrealdb::Error) -> Self {
-//         eprintln!("{value}");
-//         Self::Db
-//     }
-// }

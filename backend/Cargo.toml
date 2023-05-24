@@ -17,6 +17,7 @@ common = { path = "../common", features = ["back"] }
 surrealdb = "1.0.0-beta.8"
 thiserror = "1"
 jsonwebtoken = "8.3.0"
+chrono = "0.4.24"
 
 
 [dependencies.uuid]

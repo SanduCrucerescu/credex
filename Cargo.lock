@@ -252,6 +252,7 @@ name = "backend"
 version = "0.1.0"
 dependencies = [
  "axum",
+ "chrono",
  "common",
  "dotenvy",
  "jsonwebtoken",
@@ -480,7 +481,6 @@ dependencies = [
 name = "common"
 version = "0.1.0"
 dependencies = [
- "axum",
  "chrono",
  "serde",
  "surrealdb",

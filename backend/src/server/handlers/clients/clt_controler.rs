@@ -2,17 +2,11 @@ use axum::{
     extract::{self, Path},
     Json,
 };
+use chrono::DateTime;
 use common::{ClientLoginModel, ClientLoginResponse, ClientModel};
-use serde::{Deserialize, Serialize};
-use surrealdb::sql::{thing, Datetime, Thing};
 
 use crate::{error::Error, DBS};
-#[derive(Debug, Serialize, Deserialize)]
-#[allow(dead_code)]
-struct User {
-    name: String,
-    company: String,
-}
+
 pub struct ClientControler;
 
 impl ClientControler {
@@ -54,7 +48,7 @@ impl ClientControler {
                 name: payload.name.to_string(),
                 email: payload.email.to_string(),
                 password: payload.password.to_string(),
-                date_of_birth: Datetime::from(payload.date_of_birth),
+                date_of_birth: payload.date_of_birth,
             })
             .await?;
         Ok(Json(client))

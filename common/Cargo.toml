@@ -4,12 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-back = ["dep:axum"]
+back = ["dep:surrealdb"]
 front = []
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-axum = { version = "0.6.14", optional = true }
 serde = { version = "1.0", features = ["derive"] }
 chrono = "0.4.19"
-surrealdb = "1.0.0-beta.9"
+surrealdb = { version = "1.0.0-beta.9", optional = true }
