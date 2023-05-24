@@ -1,7 +1,7 @@
-use chrono::{Date, DateTime, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "back")]
-use surrealdb::sql::{Datetime, Thing};
+use surrealdb::sql::Thing;
 
 #[derive(Serialize, Clone, Debug, PartialEq, Deserialize)]
 pub struct ClientModel {
@@ -13,6 +13,16 @@ pub struct ClientModel {
     pub date_of_birth: DateTime<Utc>,
 }
 
+#[derive(Serialize, Clone, Debug, PartialEq, Deserialize)]
+pub struct ClientInsertModel {
+    pub name: String,
+    pub email: String,
+    pub password: String,
+    #[serde(skip_serializing)]
+    #[serde(skip_deserializing)]
+    pub date_of_birth: DateTime<Utc>,
+    pub account: AccountModel,
+}
 #[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
 pub struct ClientLoginModel {
     pub email: String,
@@ -31,9 +41,7 @@ pub struct ClientLoginRespons {
 }
 
 #[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
-pub struct Account {
-    pub acc_id: i32,
-    pub client_id: String,
+pub struct AccountModel {
     pub balance: f64,
     #[serde(skip_serializing)]
     #[serde(skip_deserializing)]

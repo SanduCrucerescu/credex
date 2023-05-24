@@ -2,8 +2,8 @@ use axum::{
     extract::{self, Path},
     Json,
 };
-use chrono::DateTime;
-use common::{ClientLoginModel, ClientLoginResponse, ClientModel};
+use chrono::Utc;
+use common::{AccountModel, ClientInsertModel, ClientLoginModel, ClientLoginResponse, ClientModel};
 
 use crate::{error::Error, DBS};
 
@@ -42,13 +42,18 @@ impl ClientControler {
     pub async fn post_client(
         extract::Json(payload): extract::Json<ClientModel>,
     ) -> Result<Json<ClientModel>, Error> {
+        let acc = AccountModel {
+            balance: 0.0,
+            acc_activation_date: Utc::now(),
+        };
         let client = DBS
             .create("client")
-            .content(ClientModel {
+            .content(ClientInsertModel {
                 name: payload.name.to_string(),
                 email: payload.email.to_string(),
                 password: payload.password.to_string(),
                 date_of_birth: payload.date_of_birth,
+                account: acc,
             })
             .await?;
         Ok(Json(client))
