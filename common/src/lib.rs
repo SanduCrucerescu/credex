@@ -5,6 +5,16 @@ use serde::{Deserialize, Serialize};
 use surrealdb::sql::Thing;
 
 #[derive(Serialize, Clone, Debug, PartialEq, Deserialize)]
+pub struct Response {
+    pub res: String,
+}
+
+#[derive(Serialize, Clone, Debug, PartialEq, Deserialize)]
+pub struct Request {
+    pub data: String,
+}
+
+#[derive(Serialize, Clone, Debug, PartialEq, Deserialize)]
 pub struct ClientModel {
     pub name: String,
     pub email: String,
@@ -33,15 +43,18 @@ pub struct ClientLoginModel {
 pub struct ClientLoginResponse {
     pub id: Thing,
 }
-
-#[derive(Serialize, Debug, Deserialize)]
-pub struct ClientLoginRespons {
-    pub id: String,
-}
-
 #[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
 pub struct AccountModel {
     pub balance: f64,
     #[serde(with = "ts_seconds")]
     pub acc_activation_date: DateTime<Utc>,
+}
+
+#[derive(Serialize, Debug, PartialEq, Clone, Deserialize)]
+pub struct TrxModel {
+    pub sender_acc_no: String,
+    pub receiver_acc_no: String,
+    pub ammount: f64,
+    #[serde(with = "ts_seconds")]
+    pub trx_time: DateTime<Utc>,
 }

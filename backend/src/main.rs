@@ -1,4 +1,6 @@
 use axum::Router;
+use backend::server::handlers::clients::clt_routes::clt_routes;
+use backend::server::handlers::trx::trx_routes::trx_routes;
 use backend::{server, DBS};
 use dotenvy::dotenv;
 use std::env;
@@ -28,10 +30,9 @@ async fn main() -> surrealdb::Result<()> {
     let app = Router::new()
         .nest(
             "/api",
-            Router::new().nest(
-                "/client",
-                server::handlers::clients::clt_routes::clt_routes(),
-            ),
+            Router::new()
+                .nest("/client", clt_routes())
+                .nest("/trx", trx_routes()),
         )
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http());
